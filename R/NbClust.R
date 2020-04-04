@@ -1,14 +1,23 @@
-NbClust <-function(data = NULL, diss=NULL, distance ="euclidean", min.nc=2, max.nc=15, method =NULL, index = "all", alphaBeale = 0.1)
+NbClust <-function(
+  data = NULL,
+  diss = NULL,
+  distance = "euclidean",
+  min.nc = 2,
+  max.nc = 15,
+  method = NULL,
+  index = "all",
+  alphaBeale = 0.1)
 {
     
-    x<-0
+    x <- 0
     min_nc <- min.nc
     max_nc <- max.nc
     
     if(is.null(method))    
       stop("method is NULL")
     method <- pmatch(method, c("ward.D2", "single", "complete", "average", 
-                               "mcquitty", "median", "centroid", "kmeans","ward.D"))
+                               "mcquitty", "median", "centroid", "kmeans","ward.D",
+                               "CONISS_rioja", "CONISS_adjclust"))
     
         
     indice <- pmatch(index, c("kl","ch","hartigan","ccc","scott","marriot","trcovw","tracew","friedman",
@@ -164,7 +173,7 @@ if(!is.null(diss))
     colnames(res) <- c("KL","CH","Hartigan","CCC","Scott","Marriot", "TrCovW", "TraceW","Friedman","Rubin","Cindex","DB",
                        "Silhouette", "Duda", "Pseudot2", "Beale", "Ratkowsky", "Ball", "Ptbiserial", "Gap", "Frey", "McClain","Gamma", "Gplus", "Tau", "Dunn", 
                        "Hubert", "SDindex", "Dindex", "SDbw")   
-    
+    hc <- NULL
     if (is.na(method))
 	     stop("invalid clustering method")
     if (method == -1)
@@ -190,25 +199,29 @@ if(!is.null(diss))
     if (method == 5) 
     {
         hc<-hclust(md,method = "mcquitty")
-		
    	}
     if (method == 6) 
     {
         hc<-hclust(md,method = "median")
-			
 	  }
     if (method == 7) 
     {
         hc<-hclust(md,method = "centroid")
-		 
 	  }
     if (method == 9) 
     {
       hc<-hclust(md,method = "ward.D")
-  
     }
-
-   
+    if (method == 10) 
+    {
+      hc <- chclust(md, method = "coniss")
+    }
+    if (method == 10) 
+    {
+      ac <- adjClust(md, type = "dissimilarity") 
+      ac$height <- cumsum(ac$height)
+      hc <- as.hclust(ac)
+    }
   
 
 #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&#
@@ -1390,8 +1403,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
  for (nc in min_nc:max_nc)
  {  
       
-	   if (any(method == 1) || (method == 2) || (method == 3) || (method == 4) || 
-		  (method == 5) || (method == 6) || (method == 7)||(method == 9)) 
+     if(method %in% c(1:7, 9:11))
       {
 	      cl1 <- cutree(hc, k=nc)
 	      cl2 <- cutree(hc, k=nc+1)
@@ -2350,18 +2362,26 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
     
     if ((indice == 14)|| (indice == 15)|| (indice == 16)|| (indice == 20)|| (indice == 31)|| (indice == 32))
     { 
-      results.final <- list(All.index=res,All.CriticalValues=resCritical,Best.nc=resultats, Best.partition=partition)
+      results.final <- list(All.index = res,
+                            All.CriticalValues = resCritical,
+                            Best.nc = resultats,
+                            Best.partition = partition,
+                            Hier.clust = hc)
     }
     
     if ((indice == 27)|| (indice == 29))
-       results.final <- list(All.index=res)
+       results.final <- list(All.index=res,
+                             Hier.clust = hc)
     
     if (any(indice==1)||(indice==2)||(indice==3)||(indice==4)||(indice==5)||(indice==6)||(indice==7)
         ||(indice==8)||(indice==9)||(indice==10)||(indice==11)||(indice==12)||(indice==13)
         ||(indice==17)||(indice==18)||(indice==19)||(indice==21)||(indice==22)||(indice==23)||(indice==24)
         ||(indice==25)||(indice==26)||(indice==28)||(indice==30))  
          
-      results.final <- list(All.index=res,Best.nc=resultats, Best.partition=partition)
+      results.final <- list(All.index = res,
+                            Best.nc = resultats,
+                            Best.partition = partition,
+                            Hier.clust = hc)
     
        
       

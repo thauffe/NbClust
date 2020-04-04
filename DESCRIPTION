@@ -3,6 +3,7 @@ Type: Package
 Title: Determining the Best Number of Clusters in a Data Set
 Version: 3.0
 Depends: R (>= 3.1.0)
+Imports: rioja, adjclust
 Date: 2015-04-13
 Author: Malika Charrad and Nadia Ghazzali and Veronique Boiteau and Azam Niknafs  
 Maintainer: Malika Charrad <malika.charrad.1@ulaval.ca>

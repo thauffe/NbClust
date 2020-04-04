@@ -15,7 +15,7 @@ method = NULL, index = "all", alphaBeale = 0.1)
 If the distance is "NULL", the dissimilarity matrix (diss) should be given by the user. If distance is not "NULL", the dissimilarity matrix should be "NULL".}
   \item{min.nc}{minimal number of clusters, between 1  and (number of objects - 1)}
   \item{max.nc}{maximal number of clusters, between 2 and (number of objects - 1), greater or equal to min.nc. By default, max.nc=15.}
-  \item{method}{the cluster analysis method to be used. This should be one of: "ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid", "kmeans".}
+  \item{method}{the cluster analysis method to be used. This should be one of: "ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid", "kmeans", "CONISS_rioja", "CONISS_adjclust".}
   \item{index}{the index to be calculated. This should be one of : "kl", "ch", "hartigan", "ccc", "scott", "marriot", "trcovw", "tracew", "friedman",  "rubin", "cindex",  "db", "silhouette", "duda", "pseudot2", "beale",  "ratkowsky", "ball", "ptbiserial", "gap", "frey", "mcclain", "gamma", "gplus", "tau", "dunn", "hubert", "sdindex", "dindex", "sdbw", "all" (all indices except GAP, Gamma, Gplus and Tau), "alllong" (all indices with Gap, Gamma, Gplus and Tau included).}
   \item{alphaBeale}{significance value for Beale's index.}
 }
@@ -67,6 +67,8 @@ If the distance is "NULL", the dissimilarity matrix (diss) should be given by th
 			    \item Each observation is reallocated to the cluster which has the closest center.
     			\item This procedure is iterated until convergence.
     	  }
+      \item \bold{CONISS_rioja} : Constrained hierarchical clustering. See package rioja for details and references.
+      \item \bold{CONISS_adjclust} : Constrained hierarchical clustering. See package adjclust for details and references.
   }
   \item \bold{Notes on the "Index" argument\cr\cr} 
   

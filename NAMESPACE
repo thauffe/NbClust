@@ -1,1 +1,3 @@
+importFrom("rioja","chclust")
+importFrom("adjclust","adjClust")
 export("NbClust")
