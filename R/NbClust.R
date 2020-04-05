@@ -216,7 +216,7 @@ if(!is.null(diss))
     {
       hc <- chclust(md, method = "coniss")
     }
-    if (method == 10) 
+    if (method == 11) 
     {
       ac <- adjClust(md, type = "dissimilarity") 
       ac$height <- cumsum(ac$height)

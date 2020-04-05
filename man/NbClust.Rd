@@ -149,7 +149,7 @@ clusters between min.nc and max.nc.}
   \item{All.CriticalValues}{ Critical values of some indices for each partition obtained with a number of clusters between min.nc and max.nc. }
   \item{Best.nc}{ Best number of clusters proposed by each index and the corresponding index value.}
   \item{Best.partition}{Partition that corresponds to the best number of clusters}
-  
+  \item{Hier.clust}{hclust object (except when cluster method = "kmeans")}
 }
 
 \author{
@@ -260,6 +260,28 @@ res$Best.nc
 res$All.CriticalValues
 res$Best.partition
 
+## Constrained clustering
+## Clustering with contiguity constraint for stratigraphy
+## (CONISS, Grimm 1987)
+## Example of D. Borcard, F. Gillet and P. Legendre:
+## Numerical Ecology with R (2nd edition)
+## Chapter 4.14 page 139
+## Instead of the stratigraphic depth, a river gradient
+## imposes the contiguity constraint
+
+\dontrun{
+library(ade4)
+library(vegan)
+data(doubs)
+spe <- doubs$fish
+# Remove empty site 8
+spe <- spe[-8, ]
+spe_bc <- vegdist(spe)
+res_doubs <- NbClust(data = spe, diss = spe_bc, distance = NULL, method = "CONISS_rioja", index = "kl")
+res_doubs$Best.nc
+# Compare the fusion levels to a broken stick model
+bstick(res_doubs$Hier.clust, 10)
+}
             
 }
 \references{
