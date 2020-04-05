@@ -24,6 +24,7 @@ NbClust <-function(
                               "rubin","cindex","db","silhouette","duda","pseudot2","beale","ratkowsky","ball",
                               "ptbiserial","gap", "frey", "mcclain",  "gamma", "gplus", "tau", "dunn", 
                               "hubert", "sdindex", "dindex", "sdbw", "all","alllong"))
+
     if (is.na(indice))
       stop("invalid clustering index")
     
@@ -1236,6 +1237,18 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
                   method == "centroid"|| method=="ward.D") 
                   pp2 <- cutree(hclust(dist(Xnew), method = method), 
                     ClassNr)
+                else if (method == "CONISS_rioja"){
+                  chc <- chclust(dist(Xnew), method = "coniss")
+                  pp2 <- cutree(chc, ClassNr)
+                }
+                else if (method == "CONISS_adjclust"){
+                  ac <- adjClust(dist(Xnew), type = "dissimilarity") 
+                  ac$height <- cumsum(ac$height)
+                  ac <- adjClust(dist(Xnew), type = "dissimilarity") 
+                  ac$height <- cumsum(ac$height)
+                  ac <- as.hclust(ac)
+                  pp2 <- cutree(ac, ClassNr)
+                }
                 else stop("Wrong clustering method")
                 if (ClassNr > 1) {
                   for (zz in (1:ClassNr)) {
@@ -1265,9 +1278,20 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
                 else if (method == "single" || method == "complete" || 
                   method == "average" || method == "ward.D2" || 
                   method == "mcquitty" || method == "median" || 
-                  method == "centroid"||method == "ward.D") 
+                  method == "centroid"||method == "ward.D"){
                   pp2 <- cutree(hclust(dist(Xnew), method = method), 
-                    ClassNr)
+                                ClassNr)
+                } 
+                else if (method == "CONISS_rioja"){
+                  chc <- chclust(dist(Xnew), method = "coniss")
+                  pp2 <- cutree(chc, ClassNr)
+                }
+                else if (method == "CONISS_adjclust"){
+                  ac <- adjClust(dist(Xnew), type = "dissimilarity") 
+                  ac$height <- cumsum(ac$height)
+                  ac <- as.hclust(ac)
+                  pp2 <- cutree(ac, ClassNr)
+                }
                 else stop("Wrong clustering method")
                 if (ClassNr > 1) {
                   for (zz in (1:ClassNr)) {
@@ -1298,6 +1322,15 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
         row.names(d) <- row.names(x)
     }
     X <- as.matrix(x)
+    
+    # print(X)
+    # print(clall[, 1])
+    # print(reference.distribution)
+    # print(B)
+    # print(method)
+    # print(d)
+    # print(centrotypes)
+    
     gap1 <- GAP(X, clall[, 1], reference.distribution, B, method, 
         d, centrotypes)
     gap <- gap1$Sgap
@@ -1600,7 +1633,13 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
 		}
 	  if (method == 8) {
 		resultSGAP <- Indice.Gap(x=jeu, clall=clall, reference.distribution = "unif", B = 10, method = "k-means", d = NULL, centrotypes = "centroids")
-		}
+	  }
+	  if (method == 10) {
+	    resultSGAP <- Indice.Gap(x=jeu, clall=clall, reference.distribution = "unif", B = 10, method = "CONISS_rioja", d = NULL, centrotypes = "centroids")
+	  }
+	  if (method == 11) {
+	    resultSGAP <- Indice.Gap(x=jeu, clall=clall, reference.distribution = "unif", B = 10, method = "CONISS_adjclust", d = NULL, centrotypes = "centroids")
+	  }
     	res[nc-min_nc+1,20] <- resultSGAP$gap
 	resCritical[nc-min_nc+1,4] <- resultSGAP$diffu
 	}
@@ -2323,10 +2362,10 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
         
       ########################## The Best partition    ###################
     
-        if (any(method == 1) || (method == 2) || (method == 3) || (method == 4) || 
-          (method == 5) || (method == 6) || (method == 7)||(method == 9))         
-            partition<- cutree(hc, k=j)
-    
+        if(method %in% c(1:7, 9:11))
+        {
+            partition <- cutree(hc, k=j)
+        }
         else
         {
             set.seed(1)
@@ -2342,11 +2381,10 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
         ||(indice==21)||(indice==22)||(indice==23)||(indice==24)||(indice==25)||(indice==26)
         ||(indice==28)||(indice==30))
     {
-      if (any(method == 1) || (method == 2) || (method == 3) || (method == 4) || 
-            (method == 5) || (method == 6) || (method == 7) || (method == 9)) 
-      
-        partition<- cutree(hc, k=best.nc)
-      
+      if(method %in% c(1:7, 9:11))
+      {
+        partition <- cutree(hc, k=best.nc)
+      }
       else
       {
         set.seed(1)
