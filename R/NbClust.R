@@ -6,7 +6,9 @@ NbClust <-function(
   max.nc = 15,
   method = NULL,
   index = "all",
-  alphaBeale = 0.1)
+  alphaBeale = 0.1,
+  kmeans.iter.max = 10,
+  kmeans.nstart = 1)
 {
     
     x <- 0
@@ -1229,7 +1231,8 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
                   pp2 <- 1:ClassNr
                 else if (method == "k-means") 
                 { set.seed(1)
-                  pp2 <- kmeans(Xnew, ClassNr, 100)$cluster
+                  pp2 <- kmeans(Xnew, ClassNr,
+                                iter.max = kmeans.iter.max, nstart = kmeans.nstart)$cluster
                 }
                 else if (method == "single" || method == "complete" || 
                   method == "average" || method == "ward.D2" || 
@@ -1273,7 +1276,8 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
                 else if (method == "k-means")
                 {
                   set.seed(1)
-                  pp2 <- kmeans(Xnew, ClassNr, 100)$cluster
+                  pp2 <- kmeans(Xnew, ClassNr,
+                                iter.max = kmeans.iter.max, nstart = kmeans.nstart)$cluster
                 }
                 else if (method == "single" || method == "complete" || 
                   method == "average" || method == "ward.D2" || 
@@ -1459,22 +1463,27 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
   	if (method == 8) 
     {
       set.seed(1)
-		  cl2 <- kmeans(jeu,nc+1)$cluster
+		  cl2 <- kmeans(jeu,nc+1,
+		                iter.max = kmeans.iter.max, nstart = kmeans.nstart)$cluster
       set.seed(1)
-		  clmax <- kmeans(jeu,max_nc)$cluster
+		  clmax <- kmeans(jeu,max_nc,
+		                  iter.max = kmeans.iter.max, nstart = kmeans.nstart)$cluster
       if (nc > 2)
 		  {
         set.seed(1)
-		    cl1 <- kmeans(jeu,nc)$cluster
+		    cl1 <- kmeans(jeu,nc,
+		                  iter.max = kmeans.iter.max, nstart = kmeans.nstart)$cluster
 		    clall <- cbind(cl1, cl2)
         set.seed(1)
-		    cl0 <- kmeans(jeu,nc-1)$cluster
+		    cl0 <- kmeans(jeu,nc-1,
+		                  iter.max = kmeans.iter.max, nstart = kmeans.nstart)$cluster
 		    clall1 <- cbind(cl0, cl1, cl2)
 		  }
 	    if (nc == 2)
 		  {
         set.seed(1)
-	      cl1 <- kmeans(jeu,nc)$cluster
+	      cl1 <- kmeans(jeu,nc,
+	                    iter.max = kmeans.iter.max, nstart = kmeans.nstart)$cluster
 		    clall <- cbind(cl1, cl2)
 		    cl0 <- rep(1,nn)
 		    clall1 <- cbind(cl0, cl1, cl2)
@@ -2369,7 +2378,8 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
         else
         {
             set.seed(1)
-            partition<-kmeans(jeu,j)$cluster
+            partition<-kmeans(jeu,j,
+                              iter.max = kmeans.iter.max, nstart = kmeans.nstart)$cluster
         }
     
     }
@@ -2388,7 +2398,8 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
       else
       {
         set.seed(1)
-        partition<-kmeans(jeu,best.nc)$cluster
+        partition<-kmeans(jeu,best.nc,
+                          iter.max = kmeans.iter.max, nstart = kmeans.nstart)$cluster
       }
             
     }
